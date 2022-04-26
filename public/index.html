@@ -1,0 +1,20 @@
+<!DOCTYPE html>
+<html lang="en">
+    <head>
+        <meta charset="UTF-8">
+        <meta name='viewport' content='width=device-width,initial-scale=1'>
+        <title>Dotris</title>
+        <script defer src='./build/dotris.js'></script>
+    </head>
+    <body>
+<!--        <h1>Dotris</h1>-->
+        <div class="dotris-root"></div>
+    </body>
+    <script>
+        document.addEventListener("DOMContentLoaded", () => {
+            new window.Dotris({
+                target: document.querySelector(".dotris-root"),
+            });
+        });
+    </script>
+</html>
