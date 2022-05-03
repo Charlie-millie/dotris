@@ -1,6 +1,7 @@
 import {config} from "../config";
-import {COLORS} from "../constants";
+import {COLORS, KEY} from "../constants";
 import Block from "./Block";
+import {moves} from "../utils";
 
 
 export default class Stage {
@@ -33,6 +34,16 @@ export default class Stage {
     draw() {
         this.$block.draw();
         this.renderStage();
+    }
+
+    drop() {
+        // moves
+        const block = moves[KEY.DOWN](this.$block);
+        console.log("[drop] block: ", block);
+
+
+
+
     }
 
     renderStage() {

@@ -1,3 +1,4 @@
+import {KEY} from "../constants";
 
 export function polyfill() {
     window.requestAnimationFrame || (window.requestAnimationFrame = (callBack) => {
@@ -42,3 +43,7 @@ export function timeFormat(time, minutesLength = 1){
         return "0:00";
     }
 }
+
+export const moves = {
+    [KEY.DOWN]: (block) => ({ ...block, y: block.y + 1 }),
+};

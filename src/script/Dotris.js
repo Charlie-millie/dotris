@@ -24,6 +24,8 @@ export default class Dotris extends BaseComponent{
 
 
 
+
+
         this.init();
     }
 
@@ -98,9 +100,15 @@ export default class Dotris extends BaseComponent{
     }
 
     animate = (now = 0) => {
-
         this.time.elapsed = now - this.time.start;
-        console.log("[animate] ");
+        if (this.time.elapsed > this.time.level) {
+            this.time.start = now;
+            if (!this.$stage.drop()) {
+                console.log("==========GAMEOVER================");
+                return;
+            }
+        }
+        // console.log("[animate] ");
         // clear stage
         this.$ctx.clearRect(0, 0, this.$ctx.canvas.width, this.$ctx.canvas.height);
         this.$stage.draw();
@@ -175,5 +183,7 @@ export default class Dotris extends BaseComponent{
         await font.load();
         document.fonts.add(font);
     }
+
+
 
 }

@@ -42,6 +42,14 @@ export default class Block {
 
     }
 
+    move(block) {
+        if (!this.hardDropped) {
+            this.x = block.x;
+            this.y = block.y;
+        }
+        this.shape = block.shape;
+    }
+
     setStartPos() {
         this.x = this.typeId === 4 ? 4 : 3;
     }
