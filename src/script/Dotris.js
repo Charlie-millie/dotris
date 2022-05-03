@@ -4,7 +4,9 @@ import {assets} from "./assets";
 import {polyfill} from "./utils";
 import Stage from "./components/Stage";
 import {LEVEL} from "./constants";
+import {config} from "./config";
 import "../style/style.scss";
+import DungGeunMo from "../assets/font/DungGeunMo.woff2";
 
 polyfill();
 export default class Dotris extends BaseComponent{
@@ -18,6 +20,7 @@ export default class Dotris extends BaseComponent{
 
         this.animateId = null;
         this.time = null;
+        this.isFirstPlay = false;
 
 
 
@@ -39,7 +42,7 @@ export default class Dotris extends BaseComponent{
         } = this.$state;
         // console.log("template ", currentState);
         return `
-            <canvas class="dotris-stage"></canvas>
+            <canvas class="dotris-stage" width="${config.COLS * config.BLOCK_SIZE}" height="${config.ROWS * config.BLOCK_SIZE}"></canvas>
             <div class="dotris-info">
                 
                 <button class="dotris-play-button" data-action="play">${currentState.toUpperCase()}</button>
@@ -51,6 +54,8 @@ export default class Dotris extends BaseComponent{
     init() {
         this.setEventDelegation();
         this.setEvent();
+
+        this.loadFonts('DungGeunMo', DungGeunMo);
 
         this.$doms.stage = this.$target.querySelector(".dotris-stage");
         this.$ctx = this.$doms.stage.getContext("2d");
@@ -93,9 +98,12 @@ export default class Dotris extends BaseComponent{
     }
 
     animate = (now = 0) => {
-        console.log("[animate]");
+
+        this.time.elapsed = now - this.time.start;
+        console.log("[animate] ");
         // clear stage
         this.$ctx.clearRect(0, 0, this.$ctx.canvas.width, this.$ctx.canvas.height);
+        this.$stage.draw();
         this.animateId = window.requestAnimationFrame(this.animate);
     }
 
@@ -115,6 +123,11 @@ export default class Dotris extends BaseComponent{
 
     play = (e) => {
         // console.log("[play] ", e);
+
+        if (!this.isFirstPlay) {
+            this.reset();
+            this.isFirstPlay = true;
+        }
         this.setState({
             currentState: "pause"
         });
@@ -133,10 +146,10 @@ export default class Dotris extends BaseComponent{
         window.cancelAnimationFrame(this.animateId);
         this.animateId = null;
 
-        this.$ctx.fillStyle = 'black';
-        this.$ctx.fillRect(1, 3, 8, 1.2);
-        this.$ctx.font = '1px Arial';
-        this.$ctx.fillStyle = 'yellow';
+        this.$ctx.fillStyle = '#333';
+        this.$ctx.fillRect(0, 3, 10, 1.2);
+        this.$ctx.font = '1.5px DungGeunMo';
+        this.$ctx.fillStyle = '#fff';
         this.$ctx.fillText('PAUSED', 3, 4);
     }
 
@@ -147,6 +160,7 @@ export default class Dotris extends BaseComponent{
             level: 0,
             lines: 0,
         });
+        this.$stage.reset();
 
         this.time = {
             start: performance.now(),
@@ -156,5 +170,10 @@ export default class Dotris extends BaseComponent{
         console.log("--time", this.time);
     }
 
+    async loadFonts(name, url) {
+        const font = new FontFace(name, `url(${url})`);
+        await font.load();
+        document.fonts.add(font);
+    }
 
 }

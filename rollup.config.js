@@ -6,6 +6,7 @@ import sass from 'rollup-plugin-sass';
 import babel from '@rollup/plugin-babel';
 import hotcss from "rollup-plugin-hot-css";
 import image from '@rollup/plugin-image';
+import url from '@rollup/plugin-url';
 import {writeFileSync} from "fs";
 
 const production = !process.env.ROLLUP_WATCH;
@@ -36,6 +37,10 @@ export default {
             }*/
         }),
         image(),
+        url({
+            include: ['**/*.woff', '**/*.woff2'],
+            limit: Infinity,
+        }),
         resolve({
             browser: true
         }),
