@@ -35,14 +35,22 @@ export const KEY = {
 };
 
 export const COLORS = [
-    'none',
+/*    'none',
     'cyan',
     'blue',
     'orange',
     'yellow',
     'green',
     'purple',
-    'red'
+    'red',*/
+    'none',
+    '#fafafa',
+    '#fafafa',
+    '#fafafa',
+    '#fafafa',
+    '#fafafa',
+    '#fafafa',
+    '#fafafa'
 ];
 
 export const SHAPES = [

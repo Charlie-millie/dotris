@@ -27,11 +27,12 @@ export default class Stage {
             ctx: this.$ctx
         });
         this.$block.setStartPos();
-        console.log("[Stage]reset grid: ", this.grid);
+        console.log("[Stage] reset grid: ", this.grid);
 
     }
 
     draw() {
+        console.log("[Stage] draw");
         this.$block.draw();
         this.renderStage();
     }
@@ -40,10 +41,17 @@ export default class Stage {
         // moves
         const block = moves[KEY.DOWN](this.$block);
         console.log("[drop] block: ", block);
+        console.log("[drop] == ", this.validation(block));
+        
+        // 이동 가능 상태인지 체크
+        if (this.validation(block)) {
+            this.$block.move(block);
+        } else {
+
+        }
 
 
-
-
+        return true;
     }
 
     renderStage() {
@@ -63,6 +71,33 @@ export default class Stage {
         return Array.from({length: config.ROWS}, () => Array(config.COLS).fill(0));
 
     }
+
+    validation(block) {
+        return block.shape.every((row, dy) => {
+            console.log("[validation] row", row, dy, block);
+            return row.every((value, dx) => {
+                console.log("[validation] value", value, dx);
+                let x = block.x + dx;
+                let y = block.y + dy;
+                console.log(x, y);
+                return value === 0 || (this.boundingWallCheck(x, y) && this.existBlockCheck(x, y));
+
+            });
+
+        });
+    }
+
+    boundingWallCheck(x, y) {
+        // block이 stage 안에 있는지 체크
+        return x >= 0 && x < config.COLS && y <= config.ROWS;
+    }
+
+    existBlockCheck(x, y) {
+        // block이 해당 그리드에 있는지 체크
+        // console.log("[grid] ---> ", this.grid[y], this.grid[y][x]);
+        return this.grid[y] && this.grid[y][x] === 0;
+    }
+
 
 
 }
