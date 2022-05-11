@@ -6044,7 +6044,10 @@
 
 	    this.$ctx = ctx;
 	    this.grid = null;
-	    this.$block = null;
+	    this.$block = null; // next block
+
+	    this.$blockNext = null;
+	    this.$ctxNext = null;
 	    this.init();
 	  }
 
@@ -6081,6 +6084,10 @@
 
 	      if (this.validation(block)) {
 	        this.$block.move(block);
+	      } else {
+	        this.appendBlock();
+	        this.createNextBlock();
+	        this.initNextBlock();
 	      }
 
 	      return true;
@@ -6141,6 +6148,40 @@
 	      // block이 해당 그리드에 있는지 체크
 	      // console.log("[grid] ---> ", this.grid[y], this.grid[y][x]);
 	      return this.grid[y] && this.grid[y][x] === 0;
+	    }
+	  }, {
+	    key: "appendBlock",
+	    value: function appendBlock() {
+	      var _context4,
+	          _this2 = this;
+
+	      // stage grid에 해당 block append 처리 (stage grid에 block shape value 치환)
+	      forEach(_context4 = this.$block.shape).call(_context4, function (row, y) {
+	        forEach(row).call(row, function (value, x) {
+	          if (value > 0) {
+	            _this2.grid[y + _this2.$block.y][x + _this2.$block.x] = value;
+	          }
+	        });
+	      });
+	    }
+	  }, {
+	    key: "initNextBlock",
+	    value: function initNextBlock() {
+	      this.$block = this.$blockNext;
+	      this.$block.$ctx = this.$ctx;
+	      this.$block.setStartPos();
+	    }
+	  }, {
+	    key: "createNextBlock",
+	    value: function createNextBlock() {
+	      /*   const {
+	             width,
+	             height
+	         } = this.$ctxNext.canvas;*/
+	      this.$blockNext = new Block({
+	        ctx: this.$ctxNext
+	      });
+	      this.$blockNext.draw();
 	    }
 	  }]);
 

@@ -10,6 +10,10 @@ export default class Stage {
         this.grid = null;
         this.$block = null;
 
+        // next block
+        this.$blockNext = null;
+        this.$ctxNext = null;
+
 
         this.init();
     }
@@ -47,7 +51,9 @@ export default class Stage {
         if (this.validation(block)) {
             this.$block.move(block);
         } else {
-
+            this.appendBlock();
+            this.createNextBlock();
+            this.initNextBlock();
         }
 
 
@@ -96,6 +102,36 @@ export default class Stage {
         // block이 해당 그리드에 있는지 체크
         // console.log("[grid] ---> ", this.grid[y], this.grid[y][x]);
         return this.grid[y] && this.grid[y][x] === 0;
+    }
+
+    appendBlock() {
+        // stage grid에 해당 block append 처리 (stage grid에 block shape value 치환)
+        this.$block.shape.forEach((row, y) => {
+            row.forEach((value, x) => {
+                 if (value > 0) {
+                     this.grid[y + this.$block.y][x + this.$block.x] = value;
+                 }
+            });
+        });
+    }
+
+    initNextBlock() {
+        this.$block = this.$blockNext;
+        this.$block.$ctx = this.$ctx;
+        this.$block.setStartPos();
+
+    }
+
+    createNextBlock() {
+     /*   const {
+            width,
+            height
+        } = this.$ctxNext.canvas;*/
+        this.$blockNext = new Block({
+            ctx: this.$ctxNext
+        });
+
+        this.$blockNext.draw();
     }
 
 
