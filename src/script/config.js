@@ -3,6 +3,8 @@ export const config = {
     BLOCK_SIZE: 30,
     COLS : 10,
     ROWS : 20,
+    nextCOLS: 4,
+    nextROWS: 4,
 
 /*    COLS : 10,
     ROWS : 20,

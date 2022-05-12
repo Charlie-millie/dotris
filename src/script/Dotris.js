@@ -16,6 +16,7 @@ export default class Dotris extends BaseComponent{
         this.$evnets = new EventEmitter();
         this.$doms = {};
         this.$ctx = null;
+        this.$ctxNext = null;
         this.$stage = null;
 
         this.animateId = null;
@@ -46,7 +47,7 @@ export default class Dotris extends BaseComponent{
         return `
             <canvas class="dotris-stage" width="${config.COLS * config.BLOCK_SIZE}" height="${config.ROWS * config.BLOCK_SIZE}"></canvas>
             <div class="dotris-info">
-                
+                <canvas class="dotris-next" width="${config.nextCOLS * config.BLOCK_SIZE}" height="${config.nextROWS * config.BLOCK_SIZE}"></canvas>
                 <button class="dotris-play-button" data-action="play">${currentState.toUpperCase()}</button>
             </div>
           
@@ -61,9 +62,13 @@ export default class Dotris extends BaseComponent{
 
         this.$doms.stage = this.$target.querySelector(".dotris-stage");
         this.$ctx = this.$doms.stage.getContext("2d");
+        this.$doms.nextBlock = this.$target.querySelector(".dotris-next");
+        this.$ctxNext = this.$doms.nextBlock.getContext("2d");
+        this.$ctxNext.scale(config.BLOCK_SIZE, config.BLOCK_SIZE);
 
         this.$stage = new Stage({
-            ctx: this.$ctx
+            ctx: this.$ctx,
+            ctxNext: this.$ctxNext
         });
 
         console.log("[init]", this);

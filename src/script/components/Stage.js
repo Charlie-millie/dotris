@@ -5,15 +5,14 @@ import {moves} from "../utils";
 
 
 export default class Stage {
-    constructor({ctx}) {
+    constructor({ctx, ctxNext}) {
         this.$ctx = ctx;
+        this.$ctxNext = ctxNext;
         this.grid = null;
         this.$block = null;
 
         // next block
         this.$blockNext = null;
-        this.$ctxNext = null;
-
 
         this.init();
     }
@@ -52,10 +51,8 @@ export default class Stage {
             this.$block.move(block);
         } else {
             this.appendBlock();
-            this.createNextBlock();
             this.initNextBlock();
         }
-
 
         return true;
     }
@@ -65,10 +62,10 @@ export default class Stage {
             // console.log("[stage] row", row, y);
             row.forEach((value, x) => {
                 // console.log("[stage] value", value, x, y);
-                /*if (value > 0) {
+                if (value > 0) {
                     this.$ctx.fillStyle = COLORS[value];
                     this.$ctx.fillRect(x, y, 1, 1);
-                }*/
+                }
             });
         });
     }
@@ -116,6 +113,7 @@ export default class Stage {
     }
 
     initNextBlock() {
+        this.createNextBlock();
         this.$block = this.$blockNext;
         this.$block.$ctx = this.$ctx;
         this.$block.setStartPos();
@@ -123,14 +121,14 @@ export default class Stage {
     }
 
     createNextBlock() {
-     /*   const {
+        const {
             width,
             height
-        } = this.$ctxNext.canvas;*/
+        } = this.$ctxNext.canvas;
         this.$blockNext = new Block({
             ctx: this.$ctxNext
         });
-
+        this.$ctxNext.clearRect(0, 0, width, height);
         this.$blockNext.draw();
     }
 

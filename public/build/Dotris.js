@@ -5959,7 +5959,9 @@
 	var config = {
 	  BLOCK_SIZE: 30,
 	  COLS: 10,
-	  ROWS: 20
+	  ROWS: 20,
+	  nextCOLS: 4,
+	  nextROWS: 4
 	  /*    COLS : 10,
 	      ROWS : 20,
 	      BLOCK_SIZE : 30,
@@ -6038,16 +6040,17 @@
 
 	var Stage = /*#__PURE__*/function () {
 	  function Stage(_ref) {
-	    var ctx = _ref.ctx;
+	    var ctx = _ref.ctx,
+	        ctxNext = _ref.ctxNext;
 
 	    _classCallCheck(this, Stage);
 
 	    this.$ctx = ctx;
+	    this.$ctxNext = ctxNext;
 	    this.grid = null;
 	    this.$block = null; // next block
 
 	    this.$blockNext = null;
-	    this.$ctxNext = null;
 	    this.init();
 	  }
 
@@ -6086,7 +6089,6 @@
 	        this.$block.move(block);
 	      } else {
 	        this.appendBlock();
-	        this.createNextBlock();
 	        this.initNextBlock();
 	      }
 
@@ -6095,16 +6097,18 @@
 	  }, {
 	    key: "renderStage",
 	    value: function renderStage() {
-	      var _context;
+	      var _context,
+	          _this = this;
 
 	      forEach(_context = this.grid).call(_context, function (row, y) {
 	        // console.log("[stage] row", row, y);
-	        forEach(row).call(row, function (value, x) {// console.log("[stage] value", value, x, y);
+	        forEach(row).call(row, function (value, x) {
+	          // console.log("[stage] value", value, x, y);
+	          if (value > 0) {
+	            _this.$ctx.fillStyle = COLORS[value];
 
-	          /*if (value > 0) {
-	              this.$ctx.fillStyle = COLORS[value];
-	              this.$ctx.fillRect(x, y, 1, 1);
-	          }*/
+	            _this.$ctx.fillRect(x, y, 1, 1);
+	          }
 	        });
 	      });
 	    }
@@ -6123,7 +6127,7 @@
 	    key: "validation",
 	    value: function validation(block) {
 	      var _context3,
-	          _this = this;
+	          _this2 = this;
 
 	      return every(_context3 = block.shape).call(_context3, function (row, dy) {
 	        console.log("[validation] row", row, dy, block);
@@ -6132,7 +6136,7 @@
 	          var x = block.x + dx;
 	          var y = block.y + dy;
 	          console.log(x, y);
-	          return value === 0 || _this.boundingWallCheck(x, y) && _this.existBlockCheck(x, y);
+	          return value === 0 || _this2.boundingWallCheck(x, y) && _this2.existBlockCheck(x, y);
 	        });
 	      });
 	    }
@@ -6153,13 +6157,13 @@
 	    key: "appendBlock",
 	    value: function appendBlock() {
 	      var _context4,
-	          _this2 = this;
+	          _this3 = this;
 
 	      // stage grid에 해당 block append 처리 (stage grid에 block shape value 치환)
 	      forEach(_context4 = this.$block.shape).call(_context4, function (row, y) {
 	        forEach(row).call(row, function (value, x) {
 	          if (value > 0) {
-	            _this2.grid[y + _this2.$block.y][x + _this2.$block.x] = value;
+	            _this3.grid[y + _this3.$block.y][x + _this3.$block.x] = value;
 	          }
 	        });
 	      });
@@ -6167,6 +6171,7 @@
 	  }, {
 	    key: "initNextBlock",
 	    value: function initNextBlock() {
+	      this.createNextBlock();
 	      this.$block = this.$blockNext;
 	      this.$block.$ctx = this.$ctx;
 	      this.$block.setStartPos();
@@ -6174,13 +6179,13 @@
 	  }, {
 	    key: "createNextBlock",
 	    value: function createNextBlock() {
-	      /*   const {
-	             width,
-	             height
-	         } = this.$ctxNext.canvas;*/
+	      var _this$$ctxNext$canvas = this.$ctxNext.canvas,
+	          width = _this$$ctxNext$canvas.width,
+	          height = _this$$ctxNext$canvas.height;
 	      this.$blockNext = new Block({
 	        ctx: this.$ctxNext
 	      });
+	      this.$ctxNext.clearRect(0, 0, width, height);
 	      this.$blockNext.draw();
 	    }
 	  }]);
@@ -6289,6 +6294,7 @@
 	    _this.$evnets = new EventEmitter();
 	    _this.$doms = {};
 	    _this.$ctx = null;
+	    _this.$ctxNext = null;
 	    _this.$stage = null;
 	    _this.animateId = null;
 	    _this.time = null;
@@ -6313,11 +6319,11 @@
 	  }, {
 	    key: "template",
 	    value: function template() {
-	      var _context, _context2;
+	      var _context, _context2, _context3, _context4;
 
 	      var currentState = this.$state.currentState; // console.log("template ", currentState);
 
-	      return concat(_context = concat(_context2 = "\n            <canvas class=\"dotris-stage\" width=\"".concat(config.COLS * config.BLOCK_SIZE, "\" height=\"")).call(_context2, config.ROWS * config.BLOCK_SIZE, "\"></canvas>\n            <div class=\"dotris-info\">\n                \n                <button class=\"dotris-play-button\" data-action=\"play\">")).call(_context, currentState.toUpperCase(), "</button>\n            </div>\n          \n        ");
+	      return concat(_context = concat(_context2 = concat(_context3 = concat(_context4 = "\n            <canvas class=\"dotris-stage\" width=\"".concat(config.COLS * config.BLOCK_SIZE, "\" height=\"")).call(_context4, config.ROWS * config.BLOCK_SIZE, "\"></canvas>\n            <div class=\"dotris-info\">\n                <canvas class=\"dotris-next\" width=\"")).call(_context3, config.nextCOLS * config.BLOCK_SIZE, "\" height=\"")).call(_context2, config.nextROWS * config.BLOCK_SIZE, "\"></canvas>\n                <button class=\"dotris-play-button\" data-action=\"play\">")).call(_context, currentState.toUpperCase(), "</button>\n            </div>\n          \n        ");
 	    }
 	  }, {
 	    key: "init",
@@ -6327,8 +6333,12 @@
 	      this.loadFonts('DungGeunMo', DungGeunMo);
 	      this.$doms.stage = this.$target.querySelector(".dotris-stage");
 	      this.$ctx = this.$doms.stage.getContext("2d");
+	      this.$doms.nextBlock = this.$target.querySelector(".dotris-next");
+	      this.$ctxNext = this.$doms.nextBlock.getContext("2d");
+	      this.$ctxNext.scale(config.BLOCK_SIZE, config.BLOCK_SIZE);
 	      this.$stage = new Stage({
-	        ctx: this.$ctx
+	        ctx: this.$ctx,
+	        ctxNext: this.$ctxNext
 	      });
 	      console.log("[init]", this);
 	    }
@@ -6382,12 +6392,12 @@
 	    value: function () {
 	      var _loadFonts = _asyncToGenerator( /*#__PURE__*/regenerator.mark(function _callee(name, url) {
 	        var font;
-	        return regenerator.wrap(function _callee$(_context3) {
+	        return regenerator.wrap(function _callee$(_context5) {
 	          while (1) {
-	            switch (_context3.prev = _context3.next) {
+	            switch (_context5.prev = _context5.next) {
 	              case 0:
 	                font = new FontFace(name, "url(".concat(url, ")"));
-	                _context3.next = 3;
+	                _context5.next = 3;
 	                return font.load();
 
 	              case 3:
@@ -6395,7 +6405,7 @@
 
 	              case 4:
 	              case "end":
-	                return _context3.stop();
+	                return _context5.stop();
 	            }
 	          }
 	        }, _callee);
