@@ -51,6 +51,8 @@ export default class Stage {
             this.$block.move(block);
         } else {
             this.appendBlock();
+            this.removeLines();
+
             this.initNextBlock();
         }
 
@@ -130,6 +132,27 @@ export default class Stage {
         });
         this.$ctxNext.clearRect(0, 0, width, height);
         this.$blockNext.draw();
+    }
+
+    removeLines() {
+        // 꽉찬 라인 지워주기
+        let line = 0;
+        this.grid.forEach((row, y) => {
+            if (row.every((value) => value > 0)) {
+                line++;
+                // 라인 지우기
+                this.grid.splice(y, 1);
+                // 최상단에 빈 라인 추가
+                this.grid.unshift(Array(config.COLS).fill(0));
+
+            }
+        });
+
+        // score 계산
+        if (line > 0) {
+
+        }
+
     }
 
 

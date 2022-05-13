@@ -6089,6 +6089,7 @@
 	        this.$block.move(block);
 	      } else {
 	        this.appendBlock();
+	        this.removeLines();
 	        this.initNextBlock();
 	      }
 
@@ -6187,6 +6188,23 @@
 	      });
 	      this.$ctxNext.clearRect(0, 0, width, height);
 	      this.$blockNext.draw();
+	    }
+	  }, {
+	    key: "removeLines",
+	    value: function removeLines() {
+	      var _context5,
+	          _this4 = this;
+
+	      forEach(_context5 = this.grid).call(_context5, function (row, y) {
+	        if (every(row).call(row, function (value) {
+	          return value > 0;
+	        })) {
+	          var _context6;
+
+	          splice(_context6 = _this4.grid).call(_context6, y, 1); // 최상단에 빈 라인 추가
+
+	        }
+	      });
 	    }
 	  }]);
 
