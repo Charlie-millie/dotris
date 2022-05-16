@@ -66,9 +66,13 @@ export const SHAPES = [
     [[7, 7, 0], [0, 7, 7], [0, 0, 0]]
 ];
 
+export const ROTATION = {
+    LEFT: 'left',
+    RIGHT: 'right'
+};
 
 
-[LEVEL, KEY, COLORS, SHAPES].forEach(item => {
+[LEVEL, KEY, COLORS, SHAPES, ROTATION].forEach(item => {
     // console.log("item ", item);
     Object.freeze(item);
 });

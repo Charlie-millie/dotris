@@ -1,4 +1,4 @@
-import {KEY} from "../constants";
+import {KEY, ROTATION} from "../constants";
 
 export function polyfill() {
     window.requestAnimationFrame || (window.requestAnimationFrame = (callBack) => {
@@ -45,5 +45,33 @@ export function timeFormat(time, minutesLength = 1){
 }
 
 export const moves = {
-    [KEY.DOWN]: (block) => ({ ...block, y: block.y + 1 }),
+    [KEY.DOWN]: (block) => ({...block, y: block.y + 1}),
+    [KEY.SPACE]: (block) => ({...block, y: block.y + 1}),
+    [KEY.LEFT]: (block) => ({...block, x: block.x - 1}),
+    [KEY.RIGHT]: (block) => ({...block, x: block.x + 1}),
+    [KEY.UP]: (block) => rotate(block, ROTATION.RIGHT),
+    [KEY.Q]: (block) => rotate(block, ROTATION.LEFT),
 };
+
+// block 회전 시키기
+function rotate(block, direction) {
+    // 불변성을 가진 객체 생성
+    let $block = JSON.parse(JSON.stringify(block));
+
+    if (!block.hardDropped) {
+        // 블록 위치 이동 처리
+        for (let y = 0; y < $block.shape.length; ++y) {
+            for (let x = 0; x < y; ++x) {
+                [$block.shape[x][y], $block.shape[y][x]] = [$block.shape[y][x], $block.shape[x][y]];
+            }
+        }
+
+        // 정렬 reverse 처리
+        if (direction === ROTATION.RIGHT) {
+            $block.shape.forEach((row) => row.reverse());
+        } else if (direction === ROTATION.LEFT) {
+            $block.shape.reverse();
+        }
+    }
+    return $block;
+}
