@@ -1,9 +1,9 @@
 import BaseComponent from "./components/BaseComponent";
 import EventEmitter from "./components/EventEmitter";
 import {assets} from "./assets";
-import {polyfill} from "./utils";
+import {moves, polyfill} from "./utils";
 import Stage from "./components/Stage";
-import {LEVEL} from "./constants";
+import {KEY, LEVEL} from "./constants";
 import {config} from "./config";
 import "../style/style.scss";
 import DungGeunMo from "../assets/font/DungGeunMo.woff2";
@@ -22,10 +22,6 @@ export default class Dotris extends BaseComponent{
         this.animateId = null;
         this.time = null;
         this.isFirstPlay = false;
-
-
-
-
 
         this.init();
     }
@@ -86,16 +82,52 @@ export default class Dotris extends BaseComponent{
 
     }
 
-    _keyPressHandler(event) {
+    keyPressHandler = (event) => {
+        switch (event.keyCode) {
+            case KEY.P:
+                this.pause();
+                break;
+            case KEY.ESC:
+                this.gameOver();
+                break;
+            default:
+                this.processBlock(event);
+                break;
+        }
 
+    }
+
+    processBlock(event) {
+        if (moves[event.keyCode]) {
+            event.preventDefault();
+            // 이동 적용된 블럭 정보 가져옴
+            let block = moves[event.keyCode](this.$stage.$block);
+
+            if (event.keyCode === KEY.SPACE) {
+                // hard drop 처리
+                while(this.$stage.validation(block)) {
+                    //todo score count & play sound
+                    this.$stage.$block.move(block);
+                    block = moves[KEY.DOWN](this.$stage.$block);
+
+                }
+                this.$stage.$block.hardDrop();
+            } else if (this.$stage.validation(block)) {
+                this.$stage.$block.move(block);
+                if (event.keyCode === KEY.DOWN) {
+                    //todo score count & play sound
+                }
+            }
+
+        }
     }
 
     setEvent() {
         this.$evnets.on("play", this._playHandler);
 
 
-        // document.removeEventListener("keydown", this._keyPressHandler);
-        document.addEventListener("keydown", this._keyPressHandler);
+        // document.removeEventListener("keydown", this.keyPressHandler);
+        document.addEventListener("keydown", this.keyPressHandler);
 
     }
 
@@ -109,7 +141,7 @@ export default class Dotris extends BaseComponent{
         if (this.time.elapsed > this.time.level) {
             this.time.start = now;
             if (!this.$stage.drop()) {
-                console.log("==========GAMEOVER================");
+                this.gameOver();
                 return;
             }
         }
@@ -164,6 +196,10 @@ export default class Dotris extends BaseComponent{
         this.$ctx.font = '1.5px DungGeunMo';
         this.$ctx.fillStyle = '#fff';
         this.$ctx.fillText('PAUSED', 3, 4);
+    }
+
+    gameOver() {
+        console.log("==========GAMEOVER================");
     }
 
     reset() {
