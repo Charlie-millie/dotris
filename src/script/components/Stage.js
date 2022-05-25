@@ -52,6 +52,10 @@ export default class Stage {
         } else {
             this.appendBlock();
             this.removeLines();
+            if (this.$block.y === 0) {
+                // Game over
+                return false;
+            }
 
             this.initNextBlock();
         }

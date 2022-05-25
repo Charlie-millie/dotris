@@ -6245,6 +6245,12 @@
 	      } else {
 	        this.appendBlock();
 	        this.removeLines();
+
+	        if (this.$block.y === 0) {
+	          // Game over
+	          return false;
+	        }
+
 	        this.initNextBlock();
 	      }
 
@@ -6391,6 +6397,25 @@
 
 	    _this = _super.call(this, target);
 
+	    _defineProperty(_assertThisInitialized(_this), "keyPressHandler", function (event) {
+	      switch (event.keyCode) {
+	        case KEY.P:
+	          _this.pause();
+
+	          break;
+
+	        case KEY.ESC:
+	          _this.gameOver();
+
+	          break;
+
+	        default:
+	          _this.processBlock(event);
+
+	          break;
+	      }
+	    });
+
 	    _defineProperty(_assertThisInitialized(_this), "animate", function () {
 	      var now = arguments.length > 0 && arguments[0] !== undefined ? arguments[0] : 0;
 	      _this.time.elapsed = now - _this.time.start;
@@ -6531,23 +6556,6 @@
 	          _this2.$evnets.emit(dataAction, e);
 	        }
 	      });
-	    }
-	  }, {
-	    key: "keyPressHandler",
-	    value: function keyPressHandler(event) {
-	      switch (event.keyCode) {
-	        case KEY.P:
-	          this.pause();
-	          break;
-
-	        case KEY.ESC:
-	          this.gameOver();
-	          break;
-
-	        default:
-	          this.processBlock(event);
-	          break;
-	      }
 	    }
 	  }, {
 	    key: "processBlock",
