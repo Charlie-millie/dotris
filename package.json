@@ -2,7 +2,7 @@
     "name": "dotris",
     "version": "1.0.0",
     "description": "",
-    "main": "main.js",
+    "main": "Dotris.js",
     "scripts": {
         "build": "rollup -c",
         "dev": "rollup -c -w",

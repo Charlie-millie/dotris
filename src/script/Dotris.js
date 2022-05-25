@@ -200,6 +200,17 @@ export default class Dotris extends BaseComponent{
 
     gameOver() {
         console.log("==========GAMEOVER================");
+        this.setState({
+            currentState: "play"
+        });
+        window.cancelAnimationFrame(this.animateId);
+        this.$ctx.fillStyle = '#333';
+        this.$ctx.fillRect(0, 3, 10, 1.2);
+        this.$ctx.font = '1.5px DungGeunMo';
+        this.$ctx.fillStyle = '#fff';
+        this.$ctx.fillText('GAMEOVER', 3, 4);
+
+        //todo score play sound
     }
 
     reset() {
