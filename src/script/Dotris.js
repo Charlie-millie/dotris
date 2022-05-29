@@ -28,7 +28,7 @@ export default class Dotris extends BaseComponent{
 
     setup() {
         this.$state = {
-            currentState: 'play', // [play, pause]
+            currentState: 'play', // [play, pause, restart]
             score: 0,
             level: 0,
             lines: 0,
@@ -163,6 +163,10 @@ export default class Dotris extends BaseComponent{
             case "play":
                 this.play();
                 break;
+            case "restart":
+                this.reset();
+                this.play();
+                break;
         }
     }
 
@@ -201,7 +205,7 @@ export default class Dotris extends BaseComponent{
     gameOver() {
         console.log("==========GAMEOVER================");
         this.setState({
-            currentState: "play"
+            currentState: "restart"
         });
         window.cancelAnimationFrame(this.animateId);
         this.$ctx.fillStyle = '#333';
